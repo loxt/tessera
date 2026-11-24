@@ -1,0 +1,12 @@
+node_modules/
+out/
+dist/
+*.log
+.DS_Store
+.claude-flow/
+.serena/
+.claude/worktrees/
+
+# local agent tooling
+.swarm/
+ruvector.db

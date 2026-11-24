@@ -1,0 +1,73 @@
+{
+  "name": "tessera",
+  "productName": "Tessera",
+  "version": "0.1.0",
+  "description": "Desktop database IDE inspired by DataGrip workflows",
+  "private": true,
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/loxt/tessera.git" },
+  "main": "out/main/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "start": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "e2e": "node e2e/smoke.e2e.ts",
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down",
+    "package": "electron-vite build && electron-builder --mac --dir",
+    "dist": "electron-vite build && electron-builder --mac dmg"
+  },
+  "build": {
+    "appId": "dev.tessera.app",
+    "productName": "Tessera",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "out/**",
+      "package.json"
+    ],
+    "asar": false,
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": [
+        "dir"
+      ],
+      "icon": "build/icon.png",
+      "identity": null
+    }
+  },
+  "dependencies": {
+    "mysql2": "3.24.5",
+    "pg": "8.23.1",
+    "pg-cursor": "2.22.1",
+    "read-excel-file": "9.3.10"
+  },
+  "devDependencies": {
+    "@fontsource-variable/geist": "5.3.0",
+    "@fontsource-variable/jetbrains-mono": "5.3.0",
+    "@types/node": "24.19.0",
+    "@types/pg": "8.23.1",
+    "@types/pg-cursor": "2.7.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "5.2.0",
+    "electron": "43.7.7",
+    "electron-builder": "26.15.3",
+    "electron-vite": "5.0.0",
+    "monaco-editor": "0.57.0",
+    "playwright": "1.63.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "sql-formatter": "15.9.0",
+    "typescript": "5.9.3",
+    "vite": "7.3.6",
+    "vitest": "5.0.3",
+    "zustand": "5.0.8"
+  }
+}

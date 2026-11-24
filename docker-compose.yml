@@ -1,0 +1,28 @@
+# Real databases for integration tests and manual QA. Seed data lives in ./fixtures.
+# Credentials are throwaway values for local, ephemeral containers only.
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: tessera
+      POSTGRES_PASSWORD: tessera
+      POSTGRES_DB: shop
+    ports: ["127.0.0.1:55432:5432"]
+    volumes: ["./fixtures/postgres.sql:/docker-entrypoint-initdb.d/seed.sql:ro"]
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "tessera", "-d", "shop"]
+      interval: 2s
+      retries: 30
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: tessera
+      MYSQL_DATABASE: shop
+      MYSQL_USER: tessera
+      MYSQL_PASSWORD: tessera
+    ports: ["127.0.0.1:53306:3306"]
+    volumes: ["./fixtures/mysql.sql:/docker-entrypoint-initdb.d/seed.sql:ro"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-utessera", "-ptessera"]
+      interval: 2s
+      retries: 60
