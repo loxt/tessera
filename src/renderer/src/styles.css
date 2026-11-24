@@ -47,10 +47,11 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .toolbar {
   -webkit-app-region: drag;
   display: flex; align-items: center; gap: 8px;
-  padding: 0 14px 0 88px;
+  padding: 0 14px;
   background: var(--chrome);
   border-bottom: 1px solid var(--border-soft);
 }
+.mac .toolbar { padding-left: 88px; }
 .toolbar > * { -webkit-app-region: no-drag; }
 .toolbar .brand { display: inline-flex; align-items: center; gap: 9px; font-weight: 800; font-size: 15px; letter-spacing: -.01em; margin-right: 6px; -webkit-app-region: drag; }
 .toolbar .spacer { flex: 1; -webkit-app-region: drag; align-self: stretch; }

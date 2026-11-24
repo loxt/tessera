@@ -3,9 +3,11 @@ import { App } from './App'
 import '@fontsource-variable/geist'
 import '@fontsource-variable/jetbrains-mono'
 import { monaco, setSnippetSource, setupMonaco } from './editor/monaco'
-import { useApp } from './store'
+import { IS_MAC, useApp } from './store'
 import './styles.css'
 
+// the toolbar leaves room for the macOS window buttons only where they exist
+document.documentElement.classList.toggle('mac', IS_MAC)
 setupMonaco()
 setSnippetSource(() => useApp.getState().snippets)
 // Monaco measures glyphs once; re-measure after the bundled fonts arrive so carets line up

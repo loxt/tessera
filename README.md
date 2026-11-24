@@ -10,9 +10,22 @@ Fast consoles with real completion, an editable grid you can trust, and producti
 PostgreSQL · MySQL / MariaDB · SQLite
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-E6BE5A?style=flat-square)](LICENSE)
-![Platform](https://img.shields.io/badge/platform-macOS-0E0F11?style=flat-square)
+![Platform](https://img.shields.io/badge/platform-macOS%20·%20Windows%20·%20Linux-0E0F11?style=flat-square)
+[![Release](https://img.shields.io/github/v/release/loxt/tessera?style=flat-square&color=E6BE5A)](https://github.com/loxt/tessera/releases/latest)
 ![Electron](https://img.shields.io/badge/Electron-43-15171A?style=flat-square&logo=electron&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-15171A?style=flat-square&logo=typescript&logoColor=white)
+
+<br>
+
+### Download
+
+[**macOS (Apple Silicon)**](https://github.com/loxt/tessera/releases/latest/download/Tessera-mac-arm64.dmg) ·
+[**macOS (Intel)**](https://github.com/loxt/tessera/releases/latest/download/Tessera-mac-x64.dmg) ·
+[**Windows**](https://github.com/loxt/tessera/releases/latest/download/Tessera-Windows-Setup.exe) ·
+[**Linux (AppImage)**](https://github.com/loxt/tessera/releases/latest/download/Tessera-Linux.AppImage) ·
+[**Linux (.deb)**](https://github.com/loxt/tessera/releases/latest/download/Tessera-Linux.deb)
+
+<sub>All versions on the <a href="https://github.com/loxt/tessera/releases">releases page</a>. First launch notes <a href="#first-launch">below</a>.</sub>
 
 <br>
 
@@ -69,13 +82,13 @@ same databases without living in SQL.
 - Every change is shown as the exact parameterized SQL before it runs, in one transaction
 - `UPDATE`/`DELETE` without `WHERE`, `DROP` and `TRUNCATE` ask first; in production you type the data source's name
 - Read-only data sources are enforced by the server session
-- Passwords live in the macOS Keychain; the UI never sees them
+- Passwords are encrypted by the OS keychain (macOS Keychain, Windows DPAPI, Linux Secret Service); the UI never sees them
 
 </td>
 <td width="50%" valign="top">
 
 **Feel at home**
-- Imports your active DataGrip keymap on first launch, customizations included
+- Imports your active DataGrip keymap on first launch, customizations included (macOS)
 - Tessera Graphite and Paper themes, plus Catppuccin and Hardhacker
 - Search Everywhere (⇧⇧) with a live preview of tables and consoles
 - Split editors, persistent named consoles, sessions restored on restart
@@ -102,26 +115,31 @@ same databases without living in SQL.
 </tr>
 </table>
 
-## Getting started
+## First launch
 
-Requirements: macOS, Node.js 22+ and npm.
+The installers are not signed with a paid developer certificate yet, so each OS asks once:
+
+- **macOS**: open the `.dmg` and drag Tessera to Applications. If macOS says it cannot verify the app, go to
+  **System Settings → Privacy & Security** and click **Open Anyway** (or run
+  `xattr -dr com.apple.quarantine /Applications/Tessera.app`).
+- **Windows**: if SmartScreen appears, click **More info → Run anyway**.
+- **Linux**: `chmod +x Tessera-Linux.AppImage && ./Tessera-Linux.AppImage` (Ubuntu 22.04+ needs `libfuse2`),
+  or `sudo apt install ./Tessera-Linux.deb`.
+
+## Build from source
+
+Requirements: Node.js 22+ and npm.
 
 ```bash
 git clone https://github.com/loxt/tessera.git
 cd tessera
 npm install
 npm run dev            # development with hot reload
+npm run dist           # installers for the current OS → dist/
 ```
 
-### Build the app
-
-```bash
-npm run package                                   # → dist/mac-arm64/Tessera.app
-ditto dist/mac-arm64/Tessera.app /Applications/Tessera.app
-```
-
-The build is unsigned, which is fine on your own machine. The first time you open it, right-click
-`Tessera.app` and choose **Open**. To hand it to someone else, sign and notarize it first.
+Releases are built by GitHub Actions: push a tag like `v0.2.0` and the
+[release workflow](.github/workflows/release.yml) builds macOS, Windows and Linux installers and publishes them.
 
 ### AI assistant (optional)
 
@@ -132,7 +150,7 @@ what it writes: generated SQL lands in the console for you to read and run.
 ## Keyboard
 
 Shortcuts are configurable in **Settings → Keymap**, with DataGrip-style contexts (Global, SQL Editor,
-Data Grid). The defaults follow DataGrip's macOS keymap.
+Data Grid). The defaults follow DataGrip's keymap; on Windows and Linux, ⌘ is Ctrl.
 
 | Action | Keys |
 |---|---|

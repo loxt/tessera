@@ -32,8 +32,10 @@ function createWindow(): void {
     minHeight: 560,
     show: false,
     title: 'Tessera',
-    titleBarStyle: 'hiddenInset',
-    trafficLightPosition: { x: 12, y: 12 },
+    // macOS draws its window buttons over our toolbar; elsewhere keep the native frame (with its buttons)
+    ...(process.platform === 'darwin'
+      ? { titleBarStyle: 'hiddenInset' as const, trafficLightPosition: { x: 12, y: 12 } }
+      : { autoHideMenuBar: true }),
     backgroundColor: nativeTheme.shouldUseDarkColors ? '#0E0F11' : '#FBFAF7',
     webPreferences: {
       preload: join(import.meta.dirname, '../preload/index.cjs'),
