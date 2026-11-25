@@ -139,7 +139,8 @@ npm run dev            # development with hot reload
 npm run dist           # installers for the current OS → dist/
 ```
 
-Releases are built by GitHub Actions: push a tag like `v0.2.0` and the
+Releases are automatic: every merge to `main` with a `feat`, `fix`, `perf` or `refactor` commit bumps the
+version from the last tag (`feat` → minor, the others → patch) and the
 [release workflow](.github/workflows/release.yml) builds macOS, Windows and Linux installers and publishes them.
 
 ### AI assistant (optional)

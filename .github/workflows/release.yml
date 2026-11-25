@@ -1,16 +1,40 @@
-# Push a tag like v0.2.0 to build Tessera on each OS and publish the installers as a GitHub release.
+# Every push to main that carries a feat/fix/perf/refactor commit (Conventional Commits) becomes a
+# release: the version is bumped from the last v* tag (.github/scripts/next-version.sh), Tessera is
+# built on each OS with that version and the installers are published as a GitHub release.
+# Pushing a tag like v1.2.3 by hand still releases that exact version.
 # File names are fixed (see "build" in package.json), so releases/latest/download/<name> links never change.
 name: Release
 
 on:
   push:
+    branches: [main]
     tags: ['v*']
 
 permissions:
   contents: write
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.next.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # tags and history, to find the last release
+      - id: next
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then tag="$GITHUB_REF_NAME"; else tag=$(.github/scripts/next-version.sh); fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "release: ${tag:-none}" >> "$GITHUB_STEP_SUMMARY"
+
   build:
+    needs: version
+    if: needs.version.outputs.tag != ''
     strategy:
       fail-fast: false
       matrix:
@@ -29,6 +53,11 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      # the app reports this version (About, installers); package.json in the repo is not bumped
+      - run: npm version "${TAG#v}" --no-git-tag-version --allow-same-version
+        shell: bash
+        env:
+          TAG: ${{ needs.version.outputs.tag }}
       - run: npx electron-vite build
       - run: npx electron-builder ${{ matrix.target }} --publish never
       - uses: actions/upload-artifact@v4
@@ -42,13 +71,15 @@ jobs:
           if-no-files-found: error
 
   release:
-    needs: build
+    needs: [version, build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
         with:
           path: dist
           merge-multiple: true
-      - run: gh release create "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" --title "Tessera $GITHUB_REF_NAME" --generate-notes
+      # creates the tag on this commit; a tag created with GITHUB_TOKEN does not trigger this workflow again
+      - run: gh release create "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "Tessera $TAG" --generate-notes
         env:
           GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.version.outputs.tag }}
