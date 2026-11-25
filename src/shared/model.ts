@@ -264,7 +264,7 @@ export interface ConsoleFile {
 export type TabState =
   | { kind: 'console'; id: string; connectionId: string; title: string; consoleId: string; autoCommit: boolean }
   | { kind: 'table'; id: string; connectionId: string; title: string; schema: string; table: string; where?: string }
-  | { kind: 'ddl'; id: string; connectionId: string; title: string; text: string }
+  | { kind: 'ddl'; id: string; connectionId: string; title: string; text: string; loading?: boolean }
 
 /** Editor split: one or two panes, each with its own tab order and active tab. */
 export interface PaneLayout {

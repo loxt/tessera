@@ -4,6 +4,17 @@ import { isJsonCell } from '@shared/json'
 import type { CellValue, ColumnMeta } from '@shared/model'
 import { Icon } from '../components/Icon'
 import { trackGrid } from '../scoped'
+import { typeKind, type TypeKind } from './columnType'
+
+const TYPE_ICON: Record<TypeKind, string> = {
+  number: 'type-number',
+  text: 'type-text',
+  bool: 'type-bool',
+  date: 'type-date',
+  json: 'braces',
+  binary: 'type-binary',
+  other: 'column'
+}
 
 const ROW = 30
 const HEAD = 36
@@ -74,8 +85,8 @@ const FILTER_BUTTON = 26
 
 function initialWidths(columns: ColumnMeta[], rowCount: number, getValue: Props['getValue'], extra = 0): number[] {
   return columns.map((col, c) => {
-    // header shows "name type": keep room for both (type is rendered smaller)
-    let chars = col.name.length + 2 + col.type.length * 0.8
+    // header shows the type icon, then the name
+    let chars = col.name.length + 3
     for (let r = 0; r < Math.min(rowCount, 60); r++) chars = Math.max(chars, formatCell(getValue(r, c)).length)
     return Math.round(Math.min(380 + extra, Math.max(56, chars * 7.4 + 18) + extra))
   })
@@ -402,8 +413,10 @@ export function DataGrid(props: Props) {
             <div className="gcell rownum" style={{ width: rnWidth }} />
             {visCols.map((c) => (
               <div key={c} className="gcell" style={{ width: widths[c] }} title={`${columns[c].name} ${columns[c].type}`} onClick={() => onSort?.(c)}>
+                <span className="ctype">
+                  <Icon name={TYPE_ICON[typeKind(columns[c].type)]} title={columns[c].type || 'unknown type'} />
+                </span>
                 <span className="cname">{columns[c].name}</span>
-                <span className="ctype">{columns[c].type}</span>
                 {sort?.col === c && <span className="sort">{sort.dir === 'asc' ? '▲' : '▼'}</span>}
                 {props.onFilterColumn && (
                   <button

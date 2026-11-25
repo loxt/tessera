@@ -111,7 +111,7 @@ try {
   await grid.locator('.grid-row').first().waitFor()
   const before = await grid.locator('.grid-row').count()
   assert.ok(before > 0, 'table grid has rows')
-  const nameCol = await grid.locator('.grid-head .gcell').evaluateAll((cells) => cells.findIndex((c) => c.textContent?.startsWith('name')))
+  const nameCol = await grid.locator('.grid-head .gcell').evaluateAll((cells) => cells.findIndex((c) => c.querySelector('.cname')?.textContent === 'name'))
   await grid.locator('.grid-row').first().locator('.gcell').nth(nameCol).dblclick()
   await page.keyboard.press('Meta+A')
   await page.keyboard.insertText('Edited by e2e')

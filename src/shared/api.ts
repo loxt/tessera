@@ -114,6 +114,10 @@ export interface TesseraApi {
   checkSavePath(path: string): Promise<{ path: string; exists: boolean }>
   /** Writes through the main process, so it needs no renderer permission, focus or user activation. */
   copyText(text: string): Promise<void>
+  /** The workspace this window runs in; null is the default one. */
+  currentWorkspace(): Promise<string | null>
+  /** Restarts Tessera in another workspace (null: the default one), creating it if needed. */
+  switchWorkspace(name: string | null): Promise<void>
   /** Same as exportToFile, into a string (clipboard). */
   exportToText(source: ExportSource, format: ExportFormat, opts: ExportOptions): Promise<string>
   /** Shows an open dialog; `read` also returns the file's UTF-8 content. */
@@ -136,5 +140,5 @@ export const API_METHODS: ApiMethod[] = [
   'execute', 'cancel', 'closeSession', 'setAutoCommit', 'commit', 'rollback',
   'tableData', 'countRows', 'applyChanges', 'explain',
   'getPrefs', 'setPrefs', 'getSession', 'setSession', 'getKeymap', 'setKeymap', 'importDataGripKeymap', 'listConsoles', 'saveConsoles', 'history', 'clearHistory', 'getSnippets', 'saveSnippets', 'getViews', 'saveViews', 'readImportFile', 'aiStatus', 'aiRun', 'aiCancel', 'schemaSnapshot',
-  'saveFile', 'openFile', 'copyText', 'chooseSavePath', 'checkSavePath', 'exportToFile', 'exportToText'
+  'saveFile', 'openFile', 'copyText', 'currentWorkspace', 'switchWorkspace', 'chooseSavePath', 'checkSavePath', 'exportToFile', 'exportToText'
 ]

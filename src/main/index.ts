@@ -5,6 +5,7 @@ import { stopAllAi } from './ai'
 import { registerIpc } from './ipc'
 import { buildMenu } from './menu'
 import { persistence } from './store'
+import { currentWorkspace, workspaceDir } from './workspace'
 
 let win: BrowserWindow | null = null
 const getWindow = () => win
@@ -13,6 +14,7 @@ app.setName('Tessera')
 // isolated profile for automated tests and demos (LATTICE_USER_DATA: the name used before the rename)
 const userDataOverride = process.env.TESSERA_USER_DATA ?? process.env.LATTICE_USER_DATA
 if (userDataOverride) app.setPath('userData', userDataOverride)
+else if (currentWorkspace) app.setPath('userData', workspaceDir(currentWorkspace))
 else keepLegacyUserData()
 
 /**
@@ -31,7 +33,7 @@ function createWindow(): void {
     minWidth: 900,
     minHeight: 560,
     show: false,
-    title: 'Tessera',
+    title: currentWorkspace ? `Tessera — ${currentWorkspace}` : 'Tessera',
     // macOS draws its window buttons over our toolbar; elsewhere keep the native frame (with its buttons)
     ...(process.platform === 'darwin'
       ? { titleBarStyle: 'hiddenInset' as const, trafficLightPosition: { x: 12, y: 12 } }

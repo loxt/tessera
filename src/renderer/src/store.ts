@@ -155,7 +155,8 @@ export async function bootstrap(): Promise<void> {
   ])
   const ids = new Set(connections.map((c) => c.id))
   const migrated = migrateTabs(
-    session.tabs.filter((t) => ids.has(t.connectionId)),
+    // a DDL tab saved mid-load has nothing to show
+    session.tabs.filter((t) => ids.has(t.connectionId) && !(t.kind === 'ddl' && t.loading)),
     savedConsoles.filter((c) => ids.has(c.connectionId)),
     newId,
     Date.now()
@@ -579,8 +580,16 @@ export function openTable(connectionId: string, schema: string, table: string, w
   addTab({ kind: 'table', id: newId(), connectionId, title: table, schema, table, where })
 }
 
-export function openDdl(connectionId: string, title: string, text: string): void {
-  addTab({ kind: 'ddl', id: newId(), connectionId, title, text })
+/** Opens the DDL tab at once, showing a loading state until the catalog answers. */
+export async function openDdl(connectionId: string, title: string, text: Promise<string>): Promise<void> {
+  const id = newId()
+  addTab({ kind: 'ddl', id, connectionId, title, text: '', loading: true })
+  try {
+    updateTab(id, { text: await text, loading: false })
+  } catch (err) {
+    void closeTab(id)
+    throw err
+  }
 }
 
 export const beginTask = (tabId: string, label: string) => set((s) => ({ tasks: startTask(s.tasks, { tabId, label, startedAt: Date.now() }) }))

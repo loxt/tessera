@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ACTIONS } from '@shared/actions'
-import { dispatch, hasHandler } from '../actions'
+import { dispatch, hasHandler, newConsoleInFocus } from '../actions'
 import { Icon } from '../components/Icon'
-import { activate, activeTab, closeModal, connectionById, consolesOf, ensureMetadata, keyLabel, openConsole, openSavedConsole, openTable, setPrefs, useApp } from '../store'
+import { activate, activeTab, closeModal, connectionById, consolesOf, ensureMetadata, keyLabel, openSavedConsole, openTable, setPrefs, useApp } from '../store'
 import { visibleMetadata } from '../schemas'
 import { Modal } from './Dialogs'
 import { SqlPreview } from '../components/SqlPreview'
@@ -59,7 +59,7 @@ export function CommandPalette({ mode, connectionId }: { mode: keyof typeof TITL
     }
     if (mode === 'consoles' && connectionId) {
       // "New console" stays pinned on top while the list is unfiltered
-      out.push({ group: 'Consoles', label: '+ New Query Console', detail: connectionById(connectionId)?.name, icon: 'plus', run: () => openConsole(connectionId) })
+      out.push({ group: 'Consoles', label: '+ New Query Console', detail: connectionById(connectionId)?.name, icon: 'plus', run: () => newConsoleInFocus(connectionId) })
       for (const c of consolesOf(connectionId, consoles)) {
         const open = tabs.some((t) => t.kind === 'console' && t.consoleId === c.id)
         out.push({ group: 'Consoles', label: c.name, detail: `${open ? 'open · ' : ''}${c.text.trim().split('\n')[0]?.slice(0, 50) ?? ''}`, icon: 'console', run: () => void openSavedConsole(c.id) })

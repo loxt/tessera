@@ -33,6 +33,8 @@ export const ACTIONS: ActionDef[] = [
   { id: 'tab.closeAll', title: 'Close All Tabs', menu: 'File', dg: ['CloseAllEditors'] },
   { id: 'settings.open', title: 'Settings…', menu: 'File', accel: 'CmdOrCtrl+,', dg: ['ShowSettings'], separatorBefore: true },
   { id: 'settings.keymap', title: 'Keymap…', menu: 'File' },
+  // shown in File › Workspace (built in src/main/menu.ts)
+  { id: 'workspace.new', title: 'New Workspace…' },
   { id: 'settings.snippets', title: 'Snippets…', menu: 'File' },
 
   { id: 'editor.format', title: 'Reformat SQL', menu: 'Edit', scope: 'editor', accel: 'CmdOrCtrl+Alt+L', dg: ['ReformatCode'] },
