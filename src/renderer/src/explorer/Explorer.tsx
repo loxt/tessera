@@ -302,7 +302,7 @@ function newSourceMenu(): MenuEntry[] {
 async function showDdl(connId: string, node: DbNode): Promise<void> {
   if (!node.path.schema) return
   try {
-    openDdl(connId, `${node.name}.sql`, await api.ddl(connId, node.kind, node.path.schema, node.name))
+    await openDdl(connId, `${node.name}.sql`, api.ddl(connId, node.kind, node.path.schema, node.name))
   } catch (err) {
     notify('error', errorMessage(err))
   }

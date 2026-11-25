@@ -11,11 +11,12 @@ export function DdlTab({ tab }: { tab: DdlState }) {
   return (
     <>
       <div className="console-toolbar">
-        <button className="btn" onClick={() => openConsole(tab.connectionId, tab.text)}>
+        <button className="btn" disabled={tab.loading} onClick={() => openConsole(tab.connectionId, tab.text)}>
           <Icon name="console" /> Open in Console
         </button>
         <button
           className="btn"
+          disabled={tab.loading}
           onClick={() =>
             void api
               .copyText(tab.text)
@@ -26,7 +27,13 @@ export function DdlTab({ tab }: { tab: DdlState }) {
           <Icon name="copy" /> Copy
         </button>
         <span style={{ flex: 1 }} />
-        <span className="muted small">read-only · generated from the catalog</span>
+        {tab.loading ? (
+          <span className="muted small" role="status" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+            <span className="spinner" /> Loading DDL…
+          </span>
+        ) : (
+          <span className="muted small">read-only · generated from the catalog</span>
+        )}
       </div>
       <SqlEditor value={tab.text} engine={engine} readOnly />
     </>

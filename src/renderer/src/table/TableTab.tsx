@@ -300,7 +300,7 @@ export function TableTab({ tab, active }: { tab: TableState; active: boolean }) 
 
   const showDdl = async () => {
     try {
-      openDdl(tab.connectionId, `${tab.table}.sql`, await api.ddl(tab.connectionId, info?.kind ?? 'table', tab.schema, tab.table))
+      await openDdl(tab.connectionId, `${tab.table}.sql`, api.ddl(tab.connectionId, info?.kind ?? 'table', tab.schema, tab.table))
     } catch (err) {
       notify('error', errorMessage(err))
     }
