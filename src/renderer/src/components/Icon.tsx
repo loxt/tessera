@@ -143,6 +143,22 @@ const ICONS: Record<string, React.ReactNode> = {
     </g>
   ),
   braces: <path {...S} d="M6 2.5c-1.3 0-2 .6-2 1.8v1.9c0 .9-.5 1.5-1.5 1.8 1 .3 1.5.9 1.5 1.8v1.9c0 1.2.7 1.8 2 1.8M10 2.5c1.3 0 2 .6 2 1.8v1.9c0 .9.5 1.5 1.5 1.8-1 .3-1.5.9-1.5 1.8v1.9c0 1.2-.7 1.8-2 1.8" />,
+  // column type families (grid header)
+  'type-number': <path {...S} d="M6.5 2.5 5 13.5M11 2.5 9.5 13.5M3 6h10.5M2.5 10h10.5" />,
+  'type-text': <path {...S} d="M3 4h10M8 4v9.5M6 13.5h4" />,
+  'type-bool': (
+    <g {...S}>
+      <rect x="1.5" y="4.5" width="13" height="7" rx="3.5" />
+      <circle cx="11" cy="8" r="1.8" fill="currentColor" />
+    </g>
+  ),
+  'type-date': (
+    <g {...S}>
+      <rect x="2" y="3.5" width="12" height="10" rx="1.5" />
+      <path d="M2 7h12M5.5 2v3M10.5 2v3" />
+    </g>
+  ),
+  'type-binary': <path {...S} d="M3 3.5v5M5.5 3.5h1.5v5H5.5zM9 3.5h1.5v5H9zM12.5 3.5v5M3 11h1.5v2.5M7 11v2.5M9.5 11h1.5v2.5H9.5zM13 11v2.5" />,
   diff: (
     <g {...S}>
       <rect x="2" y="2.5" width="5" height="11" rx="1.2" />
