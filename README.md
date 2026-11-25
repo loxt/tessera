@@ -194,6 +194,10 @@ Adding an engine means implementing `Adapter` in `src/main/db/<engine>.ts` and r
 
 Want to help? Read [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Contributors
+
+- [Gabriel Fernandes Lima](https://github.com/engfernandes): testing and product feedback
+
 ## Credits
 
 - [Catppuccin](https://github.com/catppuccin/catppuccin) and [Hardhacker](https://github.com/hardhackerlabs/themes) color palettes (MIT)
