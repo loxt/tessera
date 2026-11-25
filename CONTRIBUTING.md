@@ -61,6 +61,8 @@ npm run build && npm run e2e   # drives the real app; needed when you change UI 
 - Comments explain *why*, not what the next line does.
 - Commit messages and PR titles follow [Conventional Commits](https://www.conventionalcommits.org):
   `fix: keep the console schema when the data source has no database`.
+  They also drive releases: a merged `feat` bumps the minor version, `fix`/`perf`/`refactor` the patch,
+  and `docs`/`chore`/`ci`/`test` alone release nothing.
 
 ## License
 
