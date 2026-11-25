@@ -17,6 +17,7 @@ import {
   openConsole,
   openDdl,
   openModal,
+  prompt,
   refreshConnection,
   selectNode,
   setPrefs,
@@ -86,6 +87,13 @@ export function focusedConnectionId(): string | undefined {
   return activeTab()?.connectionId ?? (connections.length === 1 ? connections[0].id : undefined)
 }
 
+/** New console on the data source, pointed at the schema/database selected in the explorer when it belongs to it. */
+export function newConsoleInFocus(connectionId: string): void {
+  const key = useApp.getState().selectedNode
+  const node = key && keyConnection(key) === connectionId ? findNode(key) : undefined
+  openConsole(connectionId, '', { schema: node?.kind === 'schema' ? node.name : node?.path.schema })
+}
+
 function requireConnection(): string | undefined {
   const id = focusedConnectionId()
   if (!id) notify('info', 'Select a data source in the Database Explorer first.')
@@ -99,9 +107,9 @@ async function showDdlForSelection(): Promise<void> {
   try {
     if (node && ['table', 'view', 'routine', 'sequence'].includes(node.kind) && node.path.schema) {
       const connId = keyConnection(key!)
-      openDdl(connId, `${node.name}.sql`, await api.ddl(connId, node.kind, node.path.schema, node.name))
+      await openDdl(connId, `${node.name}.sql`, api.ddl(connId, node.kind, node.path.schema, node.name))
     } else if (tab?.kind === 'table') {
-      openDdl(tab.connectionId, `${tab.table}.sql`, await api.ddl(tab.connectionId, 'table', tab.schema, tab.table))
+      await openDdl(tab.connectionId, `${tab.table}.sql`, api.ddl(tab.connectionId, 'table', tab.schema, tab.table))
     } else notify('info', 'Select a table, view or routine first.')
   } catch (err) {
     notify('error', errorMessage(err))
@@ -124,11 +132,11 @@ const handlers: Record<string, () => void | Promise<void>> = {
     const id = requireConnection()
     if (!id) return
     if (consolesOf(id).length) openModal({ kind: 'palette', mode: 'consoles', connectionId: id })
-    else openConsole(id)
+    else newConsoleInFocus(id)
   },
   'console.create': () => {
     const id = requireConnection()
-    if (id) openConsole(id)
+    if (id) newConsoleInFocus(id)
   },
   'console.openFile': async () => {
     const id = requireConnection()
@@ -222,6 +230,15 @@ const handlers: Record<string, () => void | Promise<void>> = {
 
 Object.assign(handlers, {
   'settings.keymap': () => openModal({ kind: 'settings', tab: 'keymap' }),
+  'workspace.new': async () => {
+    const name = (await prompt('New Workspace', 'Name (data sources, consoles and settings start empty; Tessera restarts in it)', ''))?.trim()
+    if (!name) return
+    try {
+      await api.switchWorkspace(name)
+    } catch (err) {
+      notify('error', errorMessage(err))
+    }
+  },
   'settings.snippets': () => openModal({ kind: 'settings', tab: 'snippets' }),
   'view.fontIncrease': () => setPrefs({ editorFontSize: stepFontSize(useApp.getState().prefs.editorFontSize, 1) }),
   'view.fontDecrease': () => setPrefs({ editorFontSize: stepFontSize(useApp.getState().prefs.editorFontSize, -1) }),

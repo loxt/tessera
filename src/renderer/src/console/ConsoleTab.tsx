@@ -59,7 +59,10 @@ export function ConsoleTab({ tab, active }: { tab: ConsoleState; active: boolean
   const hiddenSchemas = conn?.hiddenSchemas
   const md = useMemo(() => rawMd && visibleMetadata(rawMd, hiddenSchemas), [rawMd, hiddenSchemas])
   const file = useApp((s) => s.consoles.find((c) => c.id === tab.consoleId))
-  const schema = file?.schema
+  const engine = conn?.engine ?? 'postgres'
+  // MySQL without a database in the connection has no current schema: run against the one the picker shows
+  // (Postgres always has one, and pinning search_path to it would drop the rest of the path)
+  const schema = file?.schema ?? (engine === 'mysql' ? md?.defaultSchema || undefined : undefined)
   const editor = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
   const [running, setRunning] = useState(false)
   const [outputs, setOutputs] = useState<OutputLine[]>([])
@@ -72,7 +75,6 @@ export function ConsoleTab({ tab, active }: { tab: ConsoleState; active: boolean
   const paramMemory = useRef<Record<string, string>>({})
   /** statements of the current run; decorations follow edits made while it runs */
   const runMarks = useRef<monaco.editor.IEditorDecorationsCollection | null>(null)
-  const engine = conn?.engine ?? 'postgres'
   const ai = useAi(engine, md)
   const [askOpen, setAskOpen] = useState(false)
   const [question, setQuestion] = useState('')
