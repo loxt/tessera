@@ -2,6 +2,7 @@ import { app, Menu, type BrowserWindow, type MenuItemConstructorOptions } from '
 import { ACTIONS, type ActionDef, type MenuName } from '@shared/actions'
 import { effectiveBindings, type Bindings } from '@shared/keymap'
 import { persistence } from './store'
+import { currentWorkspace, listWorkspaces, switchWorkspace } from './workspace'
 
 const isMac = process.platform === 'darwin'
 
@@ -23,6 +24,25 @@ function section(name: MenuName, bindings: Bindings, getWindow: () => BrowserWin
     out.push(item(a, bindings, getWindow))
   }
   return out
+}
+
+/** File › Workspace: the default workspace, the ones created so far, and "New Workspace…". */
+function workspaceMenu(bindings: Bindings, getWindow: () => BrowserWindow | null): MenuItemConstructorOptions {
+  const entry = (label: string, name: string | undefined): MenuItemConstructorOptions => ({
+    label,
+    type: 'radio',
+    checked: name === currentWorkspace,
+    click: () => switchWorkspace(name)
+  })
+  return {
+    label: 'Workspace',
+    submenu: [
+      entry('Default', undefined),
+      ...listWorkspaces().map((w) => entry(w, w)),
+      { type: 'separator' },
+      item(ACTIONS.find((a) => a.id === 'workspace.new')!, bindings, getWindow)
+    ]
+  }
 }
 
 /** (Re)builds the application menu from the effective keymap. */
@@ -48,7 +68,15 @@ export function buildMenu(getWindow: () => BrowserWindow | null): void {
           }
         ]
       : []),
-    { label: 'File', submenu: [...section('File', bindings, getWindow), ...(isMac ? [] : [{ type: 'separator' as const }, { role: 'quit' as const }])] },
+    {
+      label: 'File',
+      submenu: [
+        ...section('File', bindings, getWindow),
+        { type: 'separator' },
+        workspaceMenu(bindings, getWindow),
+        ...(isMac ? [] : [{ type: 'separator' as const }, { role: 'quit' as const }])
+      ]
+    },
     {
       label: 'Edit',
       submenu: [

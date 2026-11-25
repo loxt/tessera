@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import { api } from '../api'
 import { dispatch, focusedConnectionId } from '../actions'
 import { showMenu } from '../components/ContextMenu'
 import { Icon } from '../components/Icon'
@@ -10,6 +12,15 @@ import { TaskIndicator } from './TaskIndicator'
 
 const key = keyLabel
 
+/** Name of the non-default workspace this window runs in (File › Workspace). */
+function WorkspaceName() {
+  const [name, setName] = useState<string | null>(null)
+  useEffect(() => {
+    api.currentWorkspace().then(setName, (err) => console.error('[tessera] workspace', err))
+  }, [])
+  return name ? <span className="workspace-name" title="Workspace — switch in File › Workspace">{name}</span> : null
+}
+
 export function Toolbar({ dark }: { dark: boolean }) {
   // re-render when selection/tabs change so "Console" enables correctly
   useApp((s) => [s.selectedNode, s.activeTabId, s.connections.length].join('|'))
@@ -18,6 +29,7 @@ export function Toolbar({ dark }: { dark: boolean }) {
       <span className="brand">
         <Logo size={20} />
         Tessera
+        <WorkspaceName />
       </span>
       <button className="btn icon" title={`Database Explorer (${key('view.toggleExplorer')})`} onClick={() => dispatch('view.toggleExplorer')}>
         <Icon name="sidebar" />

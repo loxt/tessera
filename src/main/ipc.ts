@@ -13,6 +13,7 @@ import { ConnectionStore, persistence } from './store'
 import { SessionManager, toDbError } from './sessions'
 import { importDataGripKeymap } from './keymap-import'
 import { resolveTypedPath } from './paths'
+import { currentWorkspace, switchWorkspace } from './workspace'
 
 type Handlers = Omit<TesseraApi, 'onAction' | 'onExportProgress' | 'onAiText' | 'flushSession'>
 
@@ -230,6 +231,11 @@ export function registerIpc(getWindow: () => BrowserWindow | null, onKeymapChang
     },
     chooseSavePath: async (defaultPath) => pickSavePath(defaultPath),
     checkSavePath: async (path) => checkSavePath(path),
+    currentWorkspace: async () => currentWorkspace ?? null,
+    switchWorkspace: async (name) => {
+      if (name !== null && typeof name !== 'string') throw new Error('Invalid workspace')
+      switchWorkspace(name ?? undefined)
+    },
     copyText: async (text) => {
       if (typeof text !== 'string') throw new Error('Invalid content')
       clipboard.writeText(text)
