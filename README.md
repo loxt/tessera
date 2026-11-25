@@ -92,6 +92,7 @@ same databases without living in SQL.
 - Tessera Graphite and Paper themes, plus Catppuccin and Hardhacker
 - Search Everywhere (⇧⇧) with a live preview of tables and consoles
 - Split editors, persistent named consoles, sessions restored on restart
+- Separate workspaces (File › Workspace), e.g. personal and work, each with its own data sources and settings
 - An AI assistant through your local Claude Code login: it writes and explains SQL, and never runs it
 
 </td>
@@ -190,6 +191,8 @@ e2e/            Playwright-for-Electron smoke test against SQLite, PostgreSQL an
 Adding an engine means implementing `Adapter` in `src/main/db/<engine>.ts` and registering it in
 `registry.ts`. More in [technical decisions](docs/architecture/technical-decisions.md) and the
 [roadmap](docs/implementation/roadmap.md).
+
+Want to help? Read [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Credits
 
