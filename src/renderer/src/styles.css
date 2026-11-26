@@ -54,6 +54,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .mac .toolbar { padding-left: 88px; }
 .toolbar > * { -webkit-app-region: no-drag; }
 .toolbar .brand { display: inline-flex; align-items: center; gap: 9px; font-weight: 800; font-size: 15px; letter-spacing: -.01em; margin-right: 6px; -webkit-app-region: drag; }
+.toolbar .brand .update-badge { font-size: 11px; font-weight: 650; color: var(--accent-text); background: var(--accent); padding: 2px 9px; border-radius: var(--r-pill); text-decoration: none; -webkit-app-region: no-drag; }
+.toolbar .brand .update-badge:hover { filter: brightness(1.08); }
 .toolbar .brand .workspace-name { font-size: 12px; font-weight: 650; color: var(--muted); padding: 2px 9px; border-radius: var(--r-pill); background: var(--hover); }
 .toolbar .spacer { flex: 1; -webkit-app-region: drag; align-self: stretch; }
 .search-pill {

@@ -9,6 +9,7 @@ import { EnvBadge } from '../components/EnvBadge'
 import { connectionAccent, environmentLabel, type Environment } from '@shared/environment'
 import { activate, closeTab, dismissToast, keyLabel, moveTabToOtherSplit, openConsole, openModal, openSavedConsole, renameConsole, splitTab, unsplitPanes, useApp } from '../store'
 import { TaskIndicator } from './TaskIndicator'
+import type { UpdateInfo } from '@shared/update'
 
 const key = keyLabel
 
@@ -21,6 +22,25 @@ function WorkspaceName() {
   return name ? <span className="workspace-name" title="Workspace — switch in File › Workspace">{name}</span> : null
 }
 
+const UPDATE_CHECK_MS = 6 * 60 * 60 * 1000
+
+/** Shown when GitHub has a newer release; opens its page (installers + notes) in the browser. */
+function UpdateBadge() {
+  const [update, setUpdate] = useState<UpdateInfo | null>(null)
+  useEffect(() => {
+    const check = () => api.checkUpdate().then(setUpdate, (err) => console.error('[tessera] update', err))
+    check()
+    const t = setInterval(check, UPDATE_CHECK_MS)
+    return () => clearInterval(t)
+  }, [])
+  if (!update) return null
+  return (
+    <a className="update-badge" href={update.url} target="_blank" rel="noreferrer" title={`Tessera ${update.version} is out — download it on GitHub`}>
+      Update {update.version}
+    </a>
+  )
+}
+
 export function Toolbar({ dark }: { dark: boolean }) {
   // re-render when selection/tabs change so "Console" enables correctly
   useApp((s) => [s.selectedNode, s.activeTabId, s.connections.length].join('|'))
@@ -30,6 +50,7 @@ export function Toolbar({ dark }: { dark: boolean }) {
         <Logo size={20} />
         Tessera
         <WorkspaceName />
+        <UpdateBadge />
       </span>
       <button className="btn icon" title={`Database Explorer (${key('view.toggleExplorer')})`} onClick={() => dispatch('view.toggleExplorer')}>
         <Icon name="sidebar" />

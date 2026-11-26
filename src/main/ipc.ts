@@ -14,6 +14,7 @@ import { SessionManager, toDbError } from './sessions'
 import { importDataGripKeymap } from './keymap-import'
 import { resolveTypedPath } from './paths'
 import { currentWorkspace, switchWorkspace } from './workspace'
+import { checkUpdate } from './update'
 
 type Handlers = Omit<TesseraApi, 'onAction' | 'onExportProgress' | 'onAiText' | 'flushSession'>
 
@@ -236,6 +237,7 @@ export function registerIpc(getWindow: () => BrowserWindow | null, onKeymapChang
       if (name !== null && typeof name !== 'string') throw new Error('Invalid workspace')
       switchWorkspace(name ?? undefined)
     },
+    checkUpdate,
     copyText: async (text) => {
       if (typeof text !== 'string') throw new Error('Invalid content')
       clipboard.writeText(text)

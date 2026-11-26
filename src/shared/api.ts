@@ -24,6 +24,7 @@ import type { Snippet } from './snippets'
 import type { SavedView } from './views'
 import type { ImportCell } from './importData'
 import type { AiInput, AiKind } from './ai'
+import type { UpdateInfo } from './update'
 
 export interface AiStatus {
   available: boolean
@@ -118,6 +119,8 @@ export interface TesseraApi {
   currentWorkspace(): Promise<string | null>
   /** Restarts Tessera in another workspace (null: the default one), creating it if needed. */
   switchWorkspace(name: string | null): Promise<void>
+  /** The newer Tessera release on GitHub, or null when up to date (or offline). */
+  checkUpdate(): Promise<UpdateInfo | null>
   /** Same as exportToFile, into a string (clipboard). */
   exportToText(source: ExportSource, format: ExportFormat, opts: ExportOptions): Promise<string>
   /** Shows an open dialog; `read` also returns the file's UTF-8 content. */
@@ -140,5 +143,5 @@ export const API_METHODS: ApiMethod[] = [
   'execute', 'cancel', 'closeSession', 'setAutoCommit', 'commit', 'rollback',
   'tableData', 'countRows', 'applyChanges', 'explain',
   'getPrefs', 'setPrefs', 'getSession', 'setSession', 'getKeymap', 'setKeymap', 'importDataGripKeymap', 'listConsoles', 'saveConsoles', 'history', 'clearHistory', 'getSnippets', 'saveSnippets', 'getViews', 'saveViews', 'readImportFile', 'aiStatus', 'aiRun', 'aiCancel', 'schemaSnapshot',
-  'saveFile', 'openFile', 'copyText', 'currentWorkspace', 'switchWorkspace', 'chooseSavePath', 'checkSavePath', 'exportToFile', 'exportToText'
+  'saveFile', 'openFile', 'copyText', 'currentWorkspace', 'switchWorkspace', 'checkUpdate', 'chooseSavePath', 'checkSavePath', 'exportToFile', 'exportToText'
 ]
